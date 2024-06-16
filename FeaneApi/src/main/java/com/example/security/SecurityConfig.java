@@ -15,19 +15,21 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+//import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.example.config.RsaKeyProperties;
+//import com.example.config.RsaKeyProperties;
 import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.jwk.JWK;
+//import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+//import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
@@ -40,18 +42,24 @@ public class SecurityConfig {
 			"/",
 			"/token",
 			"/hello",
+			"/db-console/**",		
 			"/swagger-ui/**",
 			"/v3/api-docs/**"
 	};
 
-    @Bean
+	@Bean
+	public static PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+	
+    /*@Bean
     InMemoryUserDetailsManager users() {
 		return new InMemoryUserDetailsManager(
 				User.withUsername("kirk")
 				.password("{noop}pwd123")
 				.authorities("read")
 				.build());
-	}
+	}*/
     
     //ak mam vvgenerovane subory private.pem+public.pem cez openssl
     //plus musim mat v application class @EnableConfigurationProperties(RsaKeyProperties.class)
@@ -100,6 +108,7 @@ public class SecurityConfig {
     @Bean
     AuthenticationManager authManager(UserDetailsService userDetailsService) {
     	var authProvider=new DaoAuthenticationProvider();
+    	authProvider.setPasswordEncoder(passwordEncoder());
     	authProvider.setUserDetailsService(userDetailsService);
     	return new ProviderManager(authProvider);
     }

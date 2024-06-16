@@ -18,6 +18,6 @@ public class AccountController {
 	@SecurityRequirement(name = "feane-sec-api")
 	@Tag(name = "Test", description = "Test API url")
 	public String test() {
-		return "This is only simple test api with security enabled...";
+		return "Hellou from test-api!";
 	}
 }
