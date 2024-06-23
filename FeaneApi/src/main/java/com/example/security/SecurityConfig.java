@@ -40,7 +40,8 @@ public class SecurityConfig {
 	
 	private static final String[] WHITELIST= {
 			"/",
-			"/token",
+			"/api/v1/auth/login",
+			"/api/v1/auth/register",
 			"/hello",
 			"/db-console/**",		
 			"/swagger-ui/**",
@@ -118,7 +119,11 @@ public class SecurityConfig {
 		http
 		.authorizeHttpRequests(autz->autz
 				.requestMatchers(WHITELIST).permitAll()
-				.requestMatchers("/test").authenticated()				
+				.requestMatchers("/test").authenticated()
+				.requestMatchers("/api/v1/users/{user_id}/update-auth").hasAuthority("SCOPE_ADMIN")
+				.requestMatchers("/api/v1/users/{user_id}/remove").hasAuthority("SCOPE_ADMIN")
+				.requestMatchers("/api/v1/users").hasAuthority("SCOPE_ADMIN")
+				.requestMatchers("/api/v1/auth/profile/**").authenticated()
 				)
 		//.oauth2ResourceServer(oauth->oauth.jwt(jwt->jwt.decoder(JwtDecoder()));
 		.oauth2ResourceServer(oauth->oauth.jwt(Customizer.withDefaults()))

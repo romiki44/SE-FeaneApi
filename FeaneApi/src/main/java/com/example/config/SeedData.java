@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.example.models.Account;
 import com.example.service.AccountService;
+import com.example.utils.constants.Authority;
 
 @Component
 public class SeedData implements CommandLineRunner {
@@ -18,17 +19,17 @@ public class SeedData implements CommandLineRunner {
 		Account account01=new Account();
 		account01.setEmail("tom.jones@mail.com");			
 		account01.setPassword("pwd123");
-		account01.setRole("ROLE_USER");
+		account01.setAuthorities(Authority.USER.toString());
 		
 		Account account02=new Account();
 		account02.setEmail("johny.cash@mail.com");
 		account02.setPassword("pwd123");
-		account02.setRole("ROLE_USER");
+		account02.setAuthorities(Authority.USER.toString());
 		
 		Account account03=new Account();
 		account03.setEmail("james.kirk@mail.com");
 		account03.setPassword("pwd123");
-		account03.setRole("ROLE_ADMIN");			
+		account03.setAuthorities(Authority.ADMIN.toString() + " " + Authority.USER.toString());			
 		
 		//https://dbeaver.io/ dbtools napr. aj pre H2
 		//som si sam vymyslel...pozor, musi byt equals() nie == inac to nefunguje!

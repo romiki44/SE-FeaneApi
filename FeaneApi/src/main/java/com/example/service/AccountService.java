@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.models.Account;
 import com.example.repositories.AccountRepository;
+import com.example.utils.constants.Authority;
 
 @Service
 public class AccountService implements UserDetailsService {
@@ -27,11 +28,26 @@ public class AccountService implements UserDetailsService {
 	
 	public Account save(Account account) {
 		account.setPassword(passwordEncoder.encode(account.getPassword()));
+		if(account.getAuthorities()==null) {
+			account.setAuthorities(Authority.USER.toString());
+		}
 		return accountRepository.save(account);
 	}
 	
 	public List<Account> getAll() {
 		return accountRepository.findAll();
+	}
+	
+	public Optional<Account> findByEmail(String email) {
+		return accountRepository.findByEmail(email);
+	}
+	
+	public Optional<Account> findById(Long id) {
+		return accountRepository.findById(id);
+	}
+	
+	public void deleteById(Long id) {
+		accountRepository.deleteById(id);
 	}
 
 	@Override
@@ -45,7 +61,7 @@ public class AccountService implements UserDetailsService {
 		
 		Account account=optAccount.get();
 		List<GrantedAuthority> grantedAuthorities=new ArrayList<GrantedAuthority>();
-		grantedAuthorities.add(new SimpleGrantedAuthority(account.getRole()));
+		grantedAuthorities.add(new SimpleGrantedAuthority(account.getAuthorities()));
 		
 		return new User(account.getEmail(), account.getPassword(), grantedAuthorities);
 	}
